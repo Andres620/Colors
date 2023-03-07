@@ -124,7 +124,32 @@ public class MainActivity extends AppCompatActivity {
         StringBuilder text = new StringBuilder();
         StringBuilder tips = new StringBuilder();
 
+        int redDiff = Color.red(targetColor) - Color.red(proposedColor);
+        int greenDiff = Color.green(targetColor) - Color.green(proposedColor);
+        int blueDiff = Color.blue(targetColor) - Color.blue(proposedColor);
+
         text.append(getString(R.string.Your_score_is, String.valueOf(colorsGame.getScore())));
+
+        if (redDiff > 10){
+            tips.append("\n");
+            tips.append(getString(R.string.X_is_Y, RED.toLowerCase(), VERY_LOW.toLowerCase()));
+        }else if (redDiff > 0){
+            tips.append("\n");
+            tips.append(getString(R.string.X_is_Y, RED.toLowerCase(), LOW.toLowerCase()));
+        }else if (redDiff < -10){
+            tips.append("\n");
+            tips.append(getString(R.string.X_is_Y, RED.toLowerCase(), VERY_HIGH.toLowerCase()));
+        }else if (redDiff < 0){
+            tips.append("\n");
+            tips.append(getString(R.string.X_is_Y, RED.toLowerCase(), HIGH.toLowerCase()));
+        }
+
+        if (tips.length() > 0){
+            text.append("\n\n");
+            text.append(getString(R.string.Tips));
+            text.append(": ");
+            text.append(tips);
+        }
 
         alert.setMessage(text);
         alert.setPositiveButton(getString(R.string.Close), null);

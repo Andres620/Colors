@@ -1,7 +1,7 @@
 package com.andresparra.colors
 
 import android.os.Bundle
-import android.widget.LinearLayout
+import android.widget.SeekBar
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -12,12 +12,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.*
-import com.andresparra.colors.ui.theme.ColorsTheme
 
 class MainActivity3 : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,18 +24,44 @@ class MainActivity3 : ComponentActivity() {
     }
 }
 
+var colorsGame = ColorsGame()
 
 @Composable
 fun myUI(){
+    var sliRedValue by remember {
+        mutableStateOf(128f)
+    }
+    var sliGreenValue by remember {
+        mutableStateOf(128f)
+    }
+    var sliBlueValue by remember {
+        mutableStateOf(128f)
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(10.dp)
     ){
         colorSection();
-        sliderSection(title = stringResource(R.string.Red), color = Color.Red, value = 128f)
-        sliderSection(title = stringResource(R.string.Green), color = Color.Green, value = 128f)
-        sliderSection(title = stringResource(R.string.Blue), color = Color.Blue, value = 128f)
+        sliderSection(
+            title = stringResource(R.string.Red),
+            color = Color.Red,
+            value = sliRedValue,
+            onValueChange = { newValue -> sliRedValue = newValue},
+        )
+        sliderSection(
+            title = stringResource(R.string.Green),
+            color = Color.Green,
+            value = sliGreenValue,
+            onValueChange = { newValue -> sliGreenValue = newValue}
+        )
+        sliderSection(
+            title = stringResource(R.string.Blue),
+            color = Color.Blue,
+            value = sliBlueValue,
+            onValueChange = { newValue -> sliBlueValue = newValue}
+        )
         buttonSection(title = "Score")
         buttonSection(title = "New")
     }
@@ -65,7 +87,7 @@ fun colorSection(){
             .weight(1f)
             .padding(5.dp)
             .wrapContentWidth(Alignment.Start)
-            .background(Color.Cyan)
+            .background(Color.Blue)
             .fillMaxWidth()
             .height(570.dp)
         )
@@ -74,7 +96,7 @@ fun colorSection(){
             .weight(1f)
             .padding(5.dp)
             .wrapContentWidth(Alignment.End)
-            .background(Color.Green)
+            .background(Color.LightGray)
             .fillMaxWidth()
             .height(570.dp)
         )
@@ -85,7 +107,8 @@ fun colorSection(){
 fun sliderSection(
     title: String,
     color: Color,
-    value: Float
+    value: Float,
+    onValueChange: (Float) -> Unit
 ){
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -96,7 +119,7 @@ fun sliderSection(
             .width(40.dp))
         Slider(
             value = value,
-            onValueChange = {},
+            onValueChange = onValueChange,
             valueRange = 0f..255f,
             colors = SliderDefaults.colors(
                 thumbColor = color,
@@ -127,7 +150,12 @@ fun buttonSection(
     }
 }
 
-
-
+fun updatesValues(sliRedValue: Int, sliGreenValue: Int, sliBlueValue: Int) {
+    val redValue: Int = sliRedValue
+    val greenValue: Int = sliGreenValue
+    val blueValue: Int = sliBlueValue
+    val newBackColor = android.graphics.Color.rgb(redValue, greenValue, blueValue)
+    colorsGame.setProposedBackColor(newBackColor)
+}
 
 

@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // R es una clase que se genera automaticamente con los identificadores de todos los elementos
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main2);
 
         initView();
 

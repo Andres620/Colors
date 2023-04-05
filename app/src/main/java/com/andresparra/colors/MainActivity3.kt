@@ -37,13 +37,14 @@ fun myUI(){
     var sliBlueValue by remember {
         mutableStateOf(128f)
     }
+    var proposedColor = ColorsGame.randomColor()
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(10.dp)
     ){
-        colorSection();
+        colorSection()
         sliderSection(
             title = stringResource(R.string.Red),
             color = Color.Red,
@@ -73,10 +74,6 @@ fun myUI(){
 fun defaultPreview(){
     myUI()
 }
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
 
 @Composable
 fun colorSection(){
@@ -87,16 +84,7 @@ fun colorSection(){
             .weight(1f)
             .padding(5.dp)
             .wrapContentWidth(Alignment.Start)
-            .background(Color.Blue)
-            .fillMaxWidth()
-            .height(570.dp)
-        )
-
-        Text(text = stringResource(R.string.Target_color), Modifier
-            .weight(1f)
-            .padding(5.dp)
-            .wrapContentWidth(Alignment.End)
-            .background(Color.LightGray)
+            .background(Color(ColorsGame.randomColor()))
             .fillMaxWidth()
             .height(570.dp)
         )
@@ -148,14 +136,6 @@ fun buttonSection(
                 .fillMaxWidth())
         }
     }
-}
-
-fun updatesValues(sliRedValue: Int, sliGreenValue: Int, sliBlueValue: Int) {
-    val redValue: Int = sliRedValue
-    val greenValue: Int = sliGreenValue
-    val blueValue: Int = sliBlueValue
-    val newBackColor = android.graphics.Color.rgb(redValue, greenValue, blueValue)
-    colorsGame.setProposedBackColor(newBackColor)
 }
 
 

@@ -1,32 +1,57 @@
 package com.andresparra.colors
 
 import android.os.Bundle
-import android.widget.SeekBar
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.*
+import androidx.compose.ui.unit.dp
+
 
 class MainActivity3 : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        val colorsGame = ColorsGame()
+
         super.onCreate(savedInstanceState)
         setContent {
-            myUI(ColorsGame())
+            myUI(colorsGame = colorsGame)
         }
     }
 }
 
 @Composable
 fun myUI(colorsGame: ColorsGame){
-    var backgroundColor by remember { mutableStateOf(Color.White) }
+    var targetColor by remember { mutableStateOf(Color.Black) }
+    var proposedColor by remember { mutableStateOf(Color.Black) }
+    var score by remember { mutableStateOf(0) }
+
+    colorsGame.setOnChangeTargetColorListener { newBackColor, newTextColor ->
+        targetColor = Color(newBackColor)
+    }
+
+    colorsGame.setOnChangeProposedColorListener { newBackColor, newTextColor ->
+        proposedColor = Color(newBackColor)
+    }
+
+
+
+    var restartGame = { colorsGame.restartGame() }
+
+    var targetTextColor by remember { mutableStateOf(Color.Black) }
+    var proposedTextColor by remember { mutableStateOf(Color.Black) }
+
+
     var sliRedValue by remember {
         mutableStateOf(128f)
     }
@@ -36,7 +61,6 @@ fun myUI(colorsGame: ColorsGame){
     var sliBlueValue by remember {
         mutableStateOf(128f)
     }
-    var proposedColor = ColorsGame.randomColor()
 
     Column(
         modifier = Modifier
@@ -44,14 +68,15 @@ fun myUI(colorsGame: ColorsGame){
     ){
         Box(modifier = Modifier
             .weight(1f)
-            .fillMaxHeight()) {
-        colorSection()
+            .fillMaxHeight())
+        {
+            colorSection(proposedColor, targetColor)
         }
         sliderSection(
             title = stringResource(R.string.Red),
             color = Color.Red,
             value = sliRedValue,
-            onValueChange = { newValue -> sliRedValue = newValue},
+            onValueChange = { newValue -> sliRedValue = newValue },
         )
         sliderSection(
             title = stringResource(R.string.Green),
@@ -65,8 +90,9 @@ fun myUI(colorsGame: ColorsGame){
             value = sliBlueValue,
             onValueChange = { newValue -> sliBlueValue = newValue}
         )
-        buttonSection(title = "Score")
-        buttonSection(title = "New")
+        buttonSection(title = "Score", event = restartGame) //CAMBIAR
+        buttonSection(title = "New" , event = restartGame)
+        updateValues(sliRedValue.toInt(), sliGreenValue.toInt(), sliBlueValue.toInt(), colorsGame)
     }
 
 }
@@ -83,7 +109,7 @@ fun defaultPreview(){
 }
 
 @Composable
-fun colorSection(){
+fun colorSection(proposedColor: Color, targetColor: Color){
     Row(
         verticalAlignment = Alignment.CenterVertically,
 
@@ -94,7 +120,7 @@ fun colorSection(){
             Text(text = stringResource(R.string.Proposed_color), Modifier
                 .padding(5.dp)
                 .wrapContentWidth(Alignment.Start)
-                .background(Color(ColorsGame.randomColor()))
+                .background(proposedColor)
                 .fillMaxSize()
             )
         }
@@ -104,7 +130,7 @@ fun colorSection(){
             Text(text = stringResource(R.string.Proposed_color), Modifier
                 .padding(5.dp)
                 .wrapContentWidth(Alignment.Start)
-                .background(Color(ColorsGame.randomColor()))
+                .background(targetColor)
                 .fillMaxSize()
             )
         }
@@ -140,23 +166,24 @@ fun sliderSection(
         )
         Text(text = value.toInt().toString())
     }
-
-
-
 }
 
 @Composable
 fun buttonSection(
-    title:String
+    title:String,
+    event: () -> Unit
 ){
     Row(
         verticalAlignment = Alignment.CenterVertically,
     ){
-        Button(onClick = { /*TODO*/ }) {
+        Button(onClick = { event }) {
             Text(text = title, Modifier
                 .fillMaxWidth())
         }
     }
 }
 
-
+fun updateValues(redValue: Int, greenValue: Int, blueValue: Int, colorsGame: ColorsGame) {
+    val newBackColor = Color(red = redValue, green = greenValue, blue = blueValue)
+    colorsGame.setProposedBackColor(newBackColor.toArgb())
+}

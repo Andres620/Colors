@@ -35,8 +35,8 @@ public class MainActivity extends AppCompatActivity {
         colorsGame = new ColorsGame();
 
         colorsGame.setOnChangeTargetColorListener((newBackColor, newTextColor) -> {
-           lblProposedColor.setBackgroundColor(newBackColor);
-           lblProposedColor.setTextColor(newTextColor);
+            lblTargetColor.setBackgroundColor(newBackColor);
+            lblTargetColor.setTextColor(newTextColor);
         });
 
         colorsGame.setOnChangeProposedColorListener((newBackColor, newTextColor) -> {

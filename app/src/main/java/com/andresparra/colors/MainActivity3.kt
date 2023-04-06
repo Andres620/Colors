@@ -19,15 +19,14 @@ class MainActivity3 : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            myUI()
+            myUI(ColorsGame())
         }
     }
 }
 
-var colorsGame = ColorsGame()
-
 @Composable
-fun myUI(){
+fun myUI(colorsGame: ColorsGame){
+    var backgroundColor by remember { mutableStateOf(Color.White) }
     var sliRedValue by remember {
         mutableStateOf(128f)
     }
@@ -41,10 +40,13 @@ fun myUI(){
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
             .padding(10.dp)
     ){
+        Box(modifier = Modifier
+            .weight(1f)
+            .fillMaxHeight()) {
         colorSection()
+        }
         sliderSection(
             title = stringResource(R.string.Red),
             color = Color.Red,
@@ -69,25 +71,44 @@ fun myUI(){
 
 }
 
+@Composable
+fun MyScreen() {
+    myUI(ColorsGame())
+}
+
 @Preview(showBackground = true)
 @Composable
 fun defaultPreview(){
-    myUI()
+    myUI(ColorsGame())
 }
 
 @Composable
 fun colorSection(){
     Row(
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+
     ){
-        Text(text = stringResource(R.string.Proposed_color), Modifier
-            .weight(1f)
-            .padding(5.dp)
-            .wrapContentWidth(Alignment.Start)
-            .background(Color(ColorsGame.randomColor()))
-            .fillMaxWidth()
-            .height(570.dp)
-        )
+        Column(modifier = Modifier
+                .weight(1f))
+        {
+            Text(text = stringResource(R.string.Proposed_color), Modifier
+                .padding(5.dp)
+                .wrapContentWidth(Alignment.Start)
+                .background(Color(ColorsGame.randomColor()))
+                .fillMaxSize()
+            )
+        }
+        Column(modifier = Modifier
+            .weight(1f))
+        {
+            Text(text = stringResource(R.string.Proposed_color), Modifier
+                .padding(5.dp)
+                .wrapContentWidth(Alignment.Start)
+                .background(Color(ColorsGame.randomColor()))
+                .fillMaxSize()
+            )
+        }
+
     }
 }
 

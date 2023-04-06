@@ -1,5 +1,7 @@
 package com.andresparra.colors
 
+import android.app.AlertDialog
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,24 +16,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.Color.Companion
 
 
 class MainActivity3 : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val colorsGame = ColorsGame()
-
         super.onCreate(savedInstanceState)
         setContent {
-            myUI(colorsGame = colorsGame)
+            myUI(colorsGame = colorsGame, this)
         }
     }
 }
 
 @Composable
-fun myUI(colorsGame: ColorsGame){
+fun myUI(colorsGame: ColorsGame, context: Context){
     var targetColor by remember { mutableStateOf(Color(ColorsGame.randomColor())) }
     var proposedColor by remember { mutableStateOf(Color(ColorsGame.randomColor())) }
     var score by remember { mutableStateOf(0) }
@@ -43,6 +46,7 @@ fun myUI(colorsGame: ColorsGame){
     colorsGame.setOnChangeProposedColorListener { newBackColor, newTextColor ->
         proposedColor = Color(newBackColor)
     }
+
 
 
 
@@ -90,8 +94,8 @@ fun myUI(colorsGame: ColorsGame){
             value = sliBlueValue,
             onValueChange = { newValue -> sliBlueValue = newValue}
         )
-        buttonSection(title = "Score", event = restartGame) //CAMBIAR
-        buttonSection(title = "New" , event = restartGame)
+        buttonSection(title = "Score", event = { showScore(colorsGame, context) } )//CAMBIAR
+        buttonSection(title = "New" , event = {colorsGame.restartGame()})
         updateValues(sliRedValue.toInt(), sliGreenValue.toInt(), sliBlueValue.toInt(), colorsGame)
     }
 
@@ -99,13 +103,15 @@ fun myUI(colorsGame: ColorsGame){
 
 @Composable
 fun MyScreen() {
-    myUI(ColorsGame())
+    val context = LocalContext.current
+    myUI(ColorsGame(), context)
 }
 
 @Preview(showBackground = true)
 @Composable
 fun defaultPreview(){
-    myUI(ColorsGame())
+    val context = LocalContext.current
+    myUI(ColorsGame(), context)
 }
 
 @Composable
@@ -176,7 +182,7 @@ fun buttonSection(
     Row(
         verticalAlignment = Alignment.CenterVertically,
     ){
-        Button(onClick = { event }) {
+        Button(onClick = { event.invoke() }) {
             Text(text = title, Modifier
                 .fillMaxWidth())
         }
@@ -186,4 +192,81 @@ fun buttonSection(
 fun updateValues(redValue: Int, greenValue: Int, blueValue: Int, colorsGame: ColorsGame) {
     val newBackColor = Color(red = redValue, green = greenValue, blue = blueValue)
     colorsGame.setProposedBackColor(newBackColor.toArgb())
+}
+
+fun showScore(colorsGame: ColorsGame, context: Context) {
+    val RED = context.getString(R.string.Red)
+    val GREEN = context.getString(R.string.Green)
+    val BLUE = context.getString(R.string.Blue)
+    val VERY_LOW = context.getString(R.string.Very_low)
+    val LOW = context.getString(R.string.Low)
+    val VERY_HIGH = context.getString(R.string.Very_high)
+    val HIGH = context.getString(R.string.High)
+
+    val targetColor = colorsGame.targetBackColor
+    val proposedColor = colorsGame.proposedBackColor
+
+    val alert = AlertDialog.Builder(context)
+    val text = StringBuilder()
+    val tips = StringBuilder()
+
+    val redDiff = Color(targetColor).red - Color(proposedColor).red
+    val greenDiff = Color(targetColor).green - Color(proposedColor).green
+    val blueDiff = Color(targetColor).blue - Color(proposedColor).blue
+
+    text.append(context.getString(R.string.Your_score_is, colorsGame.score.toString()))
+
+    if (redDiff > 10) {
+        tips.append("\n")
+        tips.append(context.getString(R.string.X_is_Y, RED, VERY_LOW))
+    } else if (redDiff > 0) {
+        tips.append("\n")
+        tips.append(context.getString(R.string.X_is_Y, RED, LOW))
+    } else if (redDiff < -10) {
+        tips.append("\n")
+        tips.append(context.getString(R.string.X_is_Y, RED, VERY_HIGH))
+    } else if (redDiff < 0) {
+        tips.append("\n")
+        tips.append(context.getString(R.string.X_is_Y, RED, HIGH))
+    }
+
+    if (greenDiff > 10) {
+        tips.append("\n")
+        tips.append(context.getString(R.string.X_is_Y, GREEN, VERY_LOW))
+    } else if (greenDiff > 0) {
+        tips.append("\n")
+        tips.append(context.getString(R.string.X_is_Y, GREEN, LOW))
+    } else if (greenDiff < -10) {
+        tips.append("\n")
+        tips.append(context.getString(R.string.X_is_Y, GREEN, VERY_HIGH))
+    } else if (greenDiff < 0) {
+        tips.append("\n")
+        tips.append(context.getString(R.string.X_is_Y, GREEN, HIGH))
+    }
+
+    if (blueDiff > 10) {
+        tips.append("\n")
+        tips.append(context.getString(R.string.X_is_Y, BLUE, VERY_LOW))
+    } else if (blueDiff > 0) {
+        tips.append("\n")
+        tips.append(context.getString(R.string.X_is_Y, BLUE, LOW))
+    } else if (blueDiff < -10) {
+        tips.append("\n")
+        tips.append(context.getString(R.string.X_is_Y, BLUE, VERY_HIGH))
+    } else if (blueDiff < 0) {
+        tips.append("\n")
+        tips.append(context.getString(R.string.X_is_Y, BLUE, HIGH))
+    }
+
+    if (tips.isNotEmpty()) { // tips.length > 0
+        text.append("\n\n")
+        text.append(context.getString(R.string.Tips))
+        text.append(": ")
+        text.append(tips)
+    }
+
+    alert.setMessage(text.toString())
+    alert.setPositiveButton(context.getString(R.string.Close), null)
+
+    alert.show()
 }

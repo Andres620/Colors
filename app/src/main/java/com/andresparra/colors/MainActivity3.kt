@@ -32,8 +32,8 @@ class MainActivity3 : ComponentActivity() {
 
 @Composable
 fun myUI(colorsGame: ColorsGame){
-    var targetColor by remember { mutableStateOf(Color.Black) }
-    var proposedColor by remember { mutableStateOf(Color.Black) }
+    var targetColor by remember { mutableStateOf(Color(ColorsGame.randomColor())) }
+    var proposedColor by remember { mutableStateOf(Color(ColorsGame.randomColor())) }
     var score by remember { mutableStateOf(0) }
 
     colorsGame.setOnChangeTargetColorListener { newBackColor, newTextColor ->
@@ -127,7 +127,7 @@ fun colorSection(proposedColor: Color, targetColor: Color){
         Column(modifier = Modifier
             .weight(1f))
         {
-            Text(text = stringResource(R.string.Proposed_color), Modifier
+            Text(text = stringResource(R.string.Target_color), Modifier
                 .padding(5.dp)
                 .wrapContentWidth(Alignment.Start)
                 .background(targetColor)

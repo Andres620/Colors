@@ -21,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Color.Companion
+import androidx.compose.ui.text.style.TextAlign
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
@@ -118,29 +119,30 @@ fun defaultPreview(){
 fun colorSection(proposedColor: Color, targetColor: Color){
     Row(
         verticalAlignment = Alignment.CenterVertically,
-
     ){
         Column(
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
+                .fillMaxHeight()
                 .weight(1f))
         {
             Text(text = stringResource(R.string.Proposed_color), Modifier
                 .padding(5.dp)
                 .background(proposedColor)
-                .fillMaxSize()
+                .fillMaxSize(),
+                textAlign = TextAlign.Center
             )
         }
-        Column(verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
+        Column(
+            verticalArrangement = Arrangement.Center,
             modifier = Modifier
             .weight(1f))
         {
             Text(text = stringResource(R.string.Target_color), Modifier
                 .padding(5.dp)
                 .background(targetColor)
-                .fillMaxSize()
+                .fillMaxSize(),
+                textAlign = TextAlign.Center
             )
         }
 
@@ -187,7 +189,8 @@ fun buttonSection(
     ){
         Button(onClick = { event.invoke() }) {
             Text(text = title, Modifier
-                .fillMaxWidth())
+                .fillMaxWidth(),
+            textAlign = TextAlign.Center)
         }
     }
 }

@@ -21,6 +21,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Color.Companion
+import androidx.core.graphics.blue
+import androidx.core.graphics.green
+import androidx.core.graphics.red
 
 
 class MainActivity3 : ComponentActivity() {
@@ -46,9 +49,6 @@ fun myUI(colorsGame: ColorsGame, context: Context){
     colorsGame.setOnChangeProposedColorListener { newBackColor, newTextColor ->
         proposedColor = Color(newBackColor)
     }
-
-
-
 
     var restartGame = { colorsGame.restartGame() }
 
@@ -94,8 +94,8 @@ fun myUI(colorsGame: ColorsGame, context: Context){
             value = sliBlueValue,
             onValueChange = { newValue -> sliBlueValue = newValue}
         )
-        buttonSection(title = "Score", event = { showScore(colorsGame, context) } )//CAMBIAR
-        buttonSection(title = "New" , event = {colorsGame.restartGame()})
+        buttonSection(title =  stringResource(R.string.Score), event = { showScore(colorsGame, context) } )//CAMBIAR
+        buttonSection(title = stringResource(R.string.New) , event = {colorsGame.restartGame()})
         updateValues(sliRedValue.toInt(), sliGreenValue.toInt(), sliBlueValue.toInt(), colorsGame)
     }
 
@@ -120,22 +120,25 @@ fun colorSection(proposedColor: Color, targetColor: Color){
         verticalAlignment = Alignment.CenterVertically,
 
     ){
-        Column(modifier = Modifier
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
                 .weight(1f))
         {
             Text(text = stringResource(R.string.Proposed_color), Modifier
                 .padding(5.dp)
-                .wrapContentWidth(Alignment.Start)
                 .background(proposedColor)
                 .fillMaxSize()
             )
         }
-        Column(modifier = Modifier
+        Column(verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
             .weight(1f))
         {
             Text(text = stringResource(R.string.Target_color), Modifier
                 .padding(5.dp)
-                .wrapContentWidth(Alignment.Start)
                 .background(targetColor)
                 .fillMaxSize()
             )
@@ -210,9 +213,9 @@ fun showScore(colorsGame: ColorsGame, context: Context) {
     val text = StringBuilder()
     val tips = StringBuilder()
 
-    val redDiff = Color(targetColor).red - Color(proposedColor).red
-    val greenDiff = Color(targetColor).green - Color(proposedColor).green
-    val blueDiff = Color(targetColor).blue - Color(proposedColor).blue
+    val redDiff = targetColor.red - proposedColor.red
+    val greenDiff = targetColor.green - proposedColor.green
+    val blueDiff = targetColor.blue - proposedColor.blue
 
     text.append(context.getString(R.string.Your_score_is, colorsGame.score.toString()))
 
@@ -258,7 +261,7 @@ fun showScore(colorsGame: ColorsGame, context: Context) {
         tips.append(context.getString(R.string.X_is_Y, BLUE, HIGH))
     }
 
-    if (tips.isNotEmpty()) { // tips.length > 0
+    if (tips.length > 0) { // tips.length > 0
         text.append("\n\n")
         text.append(context.getString(R.string.Tips))
         text.append(": ")

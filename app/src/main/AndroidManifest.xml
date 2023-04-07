@@ -12,11 +12,6 @@
         android:theme="@style/Theme.Colors"
         tools:targetApi="31">
         <activity
-            android:name=".MainActivity4"
-            android:exported="false"
-            android:label="@string/title_activity_main4"
-            android:theme="@style/Theme.Colors" />
-        <activity
             android:name=".MainActivity3"
             android:exported="true"
             android:label="@string/title_activity_main"

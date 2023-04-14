@@ -28,15 +28,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // R es una clase que se genera automaticamente con los identificadores de todos los elementos
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main2);
 
         initView();
 
         colorsGame = new ColorsGame();
 
         colorsGame.setOnChangeTargetColorListener((newBackColor, newTextColor) -> {
-           lblProposedColor.setBackgroundColor(newBackColor);
-           lblProposedColor.setTextColor(newTextColor);
+            lblTargetColor.setBackgroundColor(newBackColor);
+            lblTargetColor.setTextColor(newTextColor);
         });
 
         colorsGame.setOnChangeProposedColorListener((newBackColor, newTextColor) -> {
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
             lblBlueValue.setText(String.valueOf(Color.blue(newBackColor)));
         });
 
-        //restartGame();
+        restartGame();
         initEvents();
     }
 
@@ -95,7 +95,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         btnGetScore.setOnClickListener(view -> showScore());
-        //btnNewColor.setOnClickListener(view -> restartGame());
+        btnNewColor.setOnClickListener(view -> restartGame());
+    }
+
+    public void restartGame(){
+        colorsGame.restartGame();
     }
 
     public void updatesValues(){
@@ -142,6 +146,34 @@ public class MainActivity extends AppCompatActivity {
         }else if (redDiff < 0){
             tips.append("\n");
             tips.append(getString(R.string.X_is_Y, RED.toLowerCase(), HIGH.toLowerCase()));
+        }
+
+        if (greenDiff > 10){
+            tips.append("\n");
+            tips.append(getString(R.string.X_is_Y, GREEN.toLowerCase(), VERY_LOW.toLowerCase()));
+        }else if (greenDiff > 0){
+            tips.append("\n");
+            tips.append(getString(R.string.X_is_Y, GREEN.toLowerCase(), LOW.toLowerCase()));
+        }else if (greenDiff < -10){
+            tips.append("\n");
+            tips.append(getString(R.string.X_is_Y, GREEN.toLowerCase(), VERY_HIGH.toLowerCase()));
+        }else if (greenDiff < 0){
+            tips.append("\n");
+            tips.append(getString(R.string.X_is_Y, GREEN.toLowerCase(), HIGH.toLowerCase()));
+        }
+
+        if (blueDiff > 10){
+            tips.append("\n");
+            tips.append(getString(R.string.X_is_Y, BLUE.toLowerCase(), VERY_LOW.toLowerCase()));
+        }else if (blueDiff > 0){
+            tips.append("\n");
+            tips.append(getString(R.string.X_is_Y, BLUE.toLowerCase(), LOW.toLowerCase()));
+        }else if (blueDiff < -10){
+            tips.append("\n");
+            tips.append(getString(R.string.X_is_Y, BLUE.toLowerCase(), VERY_HIGH.toLowerCase()));
+        }else if (blueDiff < 0){
+            tips.append("\n");
+            tips.append(getString(R.string.X_is_Y, BLUE.toLowerCase(), HIGH.toLowerCase()));
         }
 
         if (tips.length() > 0){

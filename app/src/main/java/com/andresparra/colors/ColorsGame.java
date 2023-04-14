@@ -12,49 +12,12 @@ public class ColorsGame {
     private onChangeTargetColorListener onChangeTargetColorListener;
     private onChangeProposedColorListener onChangeProposedColorListener;
 
-    public interface onChangeTargetColorListener{
-        public abstract void onChange(int backColor, int textColor);
+    public ColorsGame(){
+        restartGame();
     }
 
-    public interface onChangeProposedColorListener{
-        public abstract void onChange(int backColor, int textColor);
-    }
-
-    //return a random color
-    public static int randomColor(){
-        Random rand = new Random();
-
-        int redVal = rand.nextInt(256);
-        int greenVal = rand.nextInt(256);
-        int blueVal = rand.nextInt(256);
-        int color = Color.rgb(redVal, greenVal, blueVal);
-
-        return color;
-    }
-
-    //Return a suggested text color (black or white)
-    public static int getSuggestedTextColor(int backColor){
-        int redVal = Color.red(backColor);
-        int greenVal = Color.green(backColor);
-        int blueVal = Color.blue(backColor);
-        int grayVal = (int)(redVal * 0.20 + greenVal * 0.75 + blueVal * 0.05);
-        int textColor = Color.BLACK;
-
-        if (255 - grayVal > grayVal){
-            textColor = Color.WHITE;
-        }
-
-        return textColor;
-    }
-
-
-    public void setProposedBackColor(int newBackColor){
-        proposedBackColor = newBackColor;
-        proposedTextColor = getSuggestedTextColor(proposedBackColor);
-
-        if (getOnChangeProposedColorListener() != null){
-            getOnChangeProposedColorListener().onChange(proposedBackColor, proposedTextColor);
-        }
+    public void restartGame(){
+        setTargetBackColor(randomColor());
     }
 
     //Return the distance between two colors
@@ -73,23 +36,55 @@ public class ColorsGame {
         int resBlueVal = (int)(Math.pow((blueVal1 - blueVal2), 2));
 
         // Calculate the distance between two colors (points 3D)
-        double distence = Math.sqrt(resRedVal + resGreenVal + resBlueVal);
+        double distance = Math.sqrt(resRedVal + resGreenVal + resBlueVal);
 
-        return distence;
+        return distance;
     }
 
     // Return a score between 0 and 100
     public int getScore(){
-        double distance = distance(targetBackColor, proposedBackColor);
+        double distance = this.distance(targetBackColor, proposedBackColor);
 
         int score = (int)(100 - Math.min(distance, 100));
 
         return score;
     }
 
+    //Return a suggested text color (black or white)
+    public static int getSuggestedTextColor(int backColor){
+        int redVal = Color.red(backColor);
+        int greenVal = Color.green(backColor);
+        int blueVal = Color.blue(backColor);
+        int grayVal = (int)(redVal * 0.20 + greenVal * 0.75 + blueVal * 0.05);
+        int textColor = Color.BLACK;
+
+        if (255 - grayVal > grayVal){
+            textColor = Color.WHITE;
+        }
+
+        return textColor;
+    }
+
+    //return a random color
+    public static int randomColor(){
+        Random rand = new Random();
+
+        int redVal = rand.nextInt(256);
+        int greenVal = rand.nextInt(256);
+        int blueVal = rand.nextInt(256);
+        int color = Color.rgb(redVal, greenVal, blueVal);
+
+        return color;
+    }
+
+    public int getTargetBackColor(){
+        return targetBackColor;
+    }
+
     private void setTargetBackColor(int newBackColor){
         targetBackColor = newBackColor;
         targetTextColor = getSuggestedTextColor(targetBackColor);
+
         do {
             proposedBackColor = randomColor();
         }
@@ -106,29 +101,31 @@ public class ColorsGame {
         }
     }
 
-    public void restartGame(){
-        setTargetBackColor(randomColor());
-    }
-
-    public ColorsGame(){
-        restartGame();
-    }
-
     public int getTargetTextColor(){
         return  targetTextColor;
     }
 
+    public void setTargetTextColor(int targetTextColor){ this.targetTextColor = targetTextColor;}
 
     public int getProposedBackColor(){
         return proposedBackColor;
     }
 
-    public int getTargetBackColor(){
-        return targetBackColor;
+    public void setProposedBackColor(int newBackColor){
+        proposedBackColor = newBackColor;
+        proposedTextColor = getSuggestedTextColor(proposedBackColor);
+
+        if (getOnChangeProposedColorListener() != null){
+            getOnChangeProposedColorListener().onChange(proposedBackColor, proposedTextColor);
+        }
     }
 
     public int getProposedTextColor(){
         return proposedTextColor;
+    }
+
+    public void setProposedTextColor(int proposedTextColor) {
+        this.proposedTextColor = proposedTextColor;
     }
 
     public onChangeTargetColorListener getOnChangeTargetColorListener() {
@@ -139,6 +136,7 @@ public class ColorsGame {
         this.onChangeTargetColorListener = newDelegate;
     }
 
+
     public onChangeProposedColorListener getOnChangeProposedColorListener() {
         return onChangeProposedColorListener;
     }
@@ -147,4 +145,11 @@ public class ColorsGame {
         this.onChangeProposedColorListener = newDelegate;
     }
 
+    public interface onChangeTargetColorListener{
+        public abstract void onChange(int backColor, int textColor);
+    }
+
+    public interface onChangeProposedColorListener{
+        public abstract void onChange(int backColor, int textColor);
+    }
 }
